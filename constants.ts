@@ -66,3 +66,15 @@ export const WASTE_CATEGORIES: Record<WasteCategory, CategoryDetails> = {
   hazardous: { label: 'Hazardous', color: 'red-500', icon: HazardousIcon },
   unknown: { label: 'Unknown', color: 'slate-400', icon: UnknownIcon },
 };
+
+export const SAVINGS_FACTORS: Record<WasteCategory, { co2PerKg: number, waterPerKg: number }> = {
+  plastic: { co2PerKg: 1.5, waterPerKg: 25 },
+  paper: { co2PerKg: 0.9, waterPerKg: 18 },
+  glass: { co2PerKg: 0.3, waterPerKg: 5 },
+  metal: { co2PerKg: 5.0, waterPerKg: 40 },
+  organic: { co2PerKg: 0.1, waterPerKg: 2 },
+  cardboard: { co2PerKg: 0.8, waterPerKg: 15 },
+  'e-waste': { co2PerKg: 10.0, waterPerKg: 100 },
+  hazardous: { co2PerKg: 0, waterPerKg: 0 },
+  unknown: { co2PerKg: 0, waterPerKg: 0 },
+};

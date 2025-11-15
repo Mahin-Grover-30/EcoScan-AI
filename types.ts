@@ -1,15 +1,22 @@
 export type WasteCategory = 'plastic' | 'paper' | 'glass' | 'metal' | 'organic' | 'cardboard' | 'e-waste' | 'hazardous' | 'unknown';
 
-export interface ScanResult {
+// Result from AI analysis, before user input
+export interface AIScanResult {
   objectName: string;
   category: WasteCategory;
   isContaminated: boolean;
   contaminationReason: string;
   recyclingInstructions: string;
-  co2SavedKg: number;
-  waterSavedLiters: number;
   points: number;
 }
+
+// Full result after user provides weight and savings are calculated
+export interface ScanResult extends AIScanResult {
+  co2SavedKg: number;
+  waterSavedLiters: number;
+  weightKg: number;
+}
+
 
 export interface HistoryItem {
   id: string;
@@ -17,6 +24,7 @@ export interface HistoryItem {
   category: WasteCategory;
   points: number;
   timestamp: string;
+  weightKg: number;
 }
 
 export interface User {

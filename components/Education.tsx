@@ -51,7 +51,8 @@ const Education: React.FC = () => {
           objectName: `Lesson: ${lesson.title}`,
           category: 'unknown', // Using 'unknown' category for non-scan items
           points: lesson.points,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          weightKg: 0 // Lessons have no weight
       });
     }
   };

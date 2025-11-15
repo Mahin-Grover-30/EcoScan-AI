@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { ScanResult } from '../types';
+import { AIScanResult } from '../types';
 
 // FIX: Aligned with Gemini API guidelines to directly use process.env.API_KEY for initialization.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -28,23 +28,15 @@ const responseSchema = {
             type: Type.STRING,
             description: "Provide simple, actionable recycling or disposal instructions. For example: 'Rinse before recycling.' or 'Dispose of in hazardous waste collection.'."
         },
-        co2SavedKg: {
-            type: Type.NUMBER,
-            description: "An estimated value in kilograms of CO2 saved by properly recycling this item. Provide a reasonable, positive number."
-        },
-        waterSavedLiters: {
-            type: Type.NUMBER,
-            description: "An estimated value in liters of water saved by properly recycling this item. Provide a reasonable, positive number."
-        },
         points: {
             type: Type.INTEGER,
             description: "Award points for this scan. Give 10 points for a clean, recyclable item, 5 for a contaminated but recyclable item, and 1 for non-recyclable items."
         }
     },
-    required: ["objectName", "category", "isContaminated", "contaminationReason", "recyclingInstructions", "co2SavedKg", "waterSavedLiters", "points"]
+    required: ["objectName", "category", "isContaminated", "contaminationReason", "recyclingInstructions", "points"]
 };
 
-export async function analyzeWasteImage(base64Image: string, mimeType: string): Promise<ScanResult> {
+export async function analyzeWasteImage(base64Image: string, mimeType: string): Promise<AIScanResult> {
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -75,7 +67,7 @@ export async function analyzeWasteImage(base64Image: string, mimeType: string): 
             result.category = 'unknown';
         }
 
-        return result as ScanResult;
+        return result as AIScanResult;
 
     } catch (error) {
         console.error("Error analyzing image with Gemini API:", error);

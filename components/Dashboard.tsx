@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../App';
 import Card from './common/Card';
-import { WASTE_CATEGORIES } from '../constants';
+import { WASTE_CATEGORIES, SAVINGS_FACTORS } from '../constants';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { HistoryItem } from '../types';
 
@@ -17,7 +17,10 @@ const HistoryListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
                 </div>
                 <div>
                     <p className="font-semibold">{item.objectName}</p>
-                    <p className="text-sm text-secondary dark:text-gray-400">{new Date(item.timestamp).toLocaleDateString()}</p>
+                    <p className="text-sm text-secondary dark:text-gray-400">
+                        {new Date(item.timestamp).toLocaleDateString()}
+                        {item.weightKg > 0 && ` • ${(item.weightKg || 0).toFixed(2)} kg`}
+                    </p>
                 </div>
             </div>
             <span className={`font-bold text-primary`}>+{item.points} pts</span>
@@ -74,9 +77,14 @@ const Dashboard: React.FC = () => {
     })).filter(d => d.count > 0);
 
     const totalScans = user.history.length;
-    // Mock data for other stats
-    const co2Saved = user.history.length * 1.2; // mock calculation
-    const waterSaved = user.history.length * 5.5; // mock calculation
+    const totalWeight = user.history.reduce((acc, item) => acc + (item.weightKg || 0), 0);
+    
+    const { co2Saved, waterSaved } = user.history.reduce((acc, item) => {
+        const savings = SAVINGS_FACTORS[item.category] || SAVINGS_FACTORS.unknown;
+        acc.co2Saved += (item.weightKg || 0) * savings.co2PerKg;
+        acc.waterSaved += (item.weightKg || 0) * savings.waterPerKg;
+        return acc;
+    }, { co2Saved: 0, waterSaved: 0 });
 
     return (
         <div className="space-y-6">
@@ -85,7 +93,7 @@ const Dashboard: React.FC = () => {
             <LevelProgress points={user.points} />
 
             <Card>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
                     <div>
                         <p className="text-3xl font-bold text-primary">{user.points}</p>
                         <p className="text-sm text-secondary">Total Points</p>
@@ -94,13 +102,17 @@ const Dashboard: React.FC = () => {
                         <p className="text-3xl font-bold text-primary">{totalScans}</p>
                         <p className="text-sm text-secondary">Items Logged</p>
                     </div>
+                     <div>
+                        <p className="text-3xl font-bold text-primary">{totalWeight.toFixed(2)}</p>
+                        <p className="text-sm text-secondary">kg Recycled</p>
+                    </div>
                     <div>
-                        <p className="text-3xl font-bold text-primary">{co2Saved.toFixed(1)} kg</p>
-                        <p className="text-sm text-secondary">CO₂ Saved</p>
+                        <p className="text-3xl font-bold text-primary">{co2Saved.toFixed(1)}</p>
+                        <p className="text-sm text-secondary">kg CO₂ Saved</p>
                     </div>
                      <div>
-                        <p className="text-3xl font-bold text-primary">{waterSaved.toFixed(1)} L</p>
-                        <p className="text-sm text-secondary">Water Saved</p>
+                        <p className="text-3xl font-bold text-primary">{waterSaved.toFixed(1)}</p>
+                        <p className="text-sm text-secondary">Liters Water Saved</p>
                     </div>
                 </div>
             </Card>
