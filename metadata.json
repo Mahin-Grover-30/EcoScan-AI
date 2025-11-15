@@ -1,0 +1,7 @@
+{
+  "name": "EcoScan AI: Waste Sorter",
+  "description": "An intelligent waste scanner that uses AI to identify recyclable materials from your camera or photos, provides sorting instructions, and rewards you for making sustainable choices. Track your impact and learn more about recycling.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
